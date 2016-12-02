@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link href="stylesheets/style.css" rel="stylesheet">
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+  
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="Angular/Calc.js"></script>
+  </head>
+  <body ng-app="myCalc" ng-controller="CalcController">
+
+  
+
+    <div class="container">
+    <div class="row">
+    
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-5">
+      <h2><%= title %></h2>
+    <p>Welcome to <%= title %></p>
+    <form action="Calc" method="post" class="jumbotron" style="background-color:#F5F5DC">
+    <div class="form-group">
+    <!-- <div class="operands" style="display:inline"> -->
+    Operand 1 <input type="number" class="form-control" name="number1" ng-model="number1"/><br>
+    Operand 2 <input type="number" class="form-control" name="number2" ng-model="number2"/> <br>
+   
+   
+    Operation:
+     <select name="operation" ng-model="operation" class="form-control">
+     
+    <option value="add"> Add</option>
+    <option value="sub"> Subtract</option>
+    <option value="mul"> Multiply</option>
+    <option value="div"> Divide</option>
+    </select><br>
+    </div>
+     <button type="button" ng-click="calculate()" class="btn btn-info btn-block" name="Go" value="Go!">GO!</button>
+    </form>
+    
+    <h2>Result</h2>
+    <div class="jumbotron">
+    <h2 class="text-center" >{{result}}</h2>
+   
+
+    </div>
+    
+    
+
+
+    </div>
+    </div>
+  </body>
+</html>
