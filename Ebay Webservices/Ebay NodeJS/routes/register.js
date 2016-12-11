@@ -1,5 +1,5 @@
 var crypto = require('crypto');
-var mysql = require('./mysql');
+/*var mysql = require('./mysql');*/
 var dateFormat = require('dateFormat');
 require('ejs');
 var winston = require('../log.js');
@@ -26,8 +26,8 @@ exports.signup = function(req, res){
 	
 	console.log(password);
 
-	var getUser="Insert INTO users (`password`, `email`, `firstName`, `lastName`) VALUES ('"+password+"','"+emailId+"','"+firstName+"','"+lastName+"');";
-	console.log("Query is:"+getUser);
+	
+	
 
 	var option = {
 					ignoredNamespaces : true	

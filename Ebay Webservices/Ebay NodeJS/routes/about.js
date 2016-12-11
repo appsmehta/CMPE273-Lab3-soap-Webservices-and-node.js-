@@ -2,10 +2,15 @@
  * New node file
  */
 var ejs = require('ejs');
-var mysql = require('./mysql');
+/*var mysql = require('./mysql');*/
 var auctions = require('./adM');
 require("client-sessions");
 var winston = require('../log.js');
+
+var soap = require('soap');
+var baseURL= "http://localhost:8080/Ebay_Jax/services";
+
+
 exports.about = function (req,res){
 	if(req.session.username!=undefined){
 
@@ -19,7 +24,7 @@ else {
 	res.redirect('/')
 	
 	/*res.end;*/
-}
+	}
 }
 
 exports.getProfile = function (req,res){
@@ -27,160 +32,161 @@ exports.getProfile = function (req,res){
 
 	if(req.session.username!=undefined)
 	{
+		var option = {
+					ignoredNamespaces : true	
+			};
 
+		var url = baseURL + "/About?wsdl";
+		var args = {"email": req.session.username};
 
-		var getUserQuery = "select * from users where email='"+req.session.username+"'";
-		console.log("Query is:"+getUserQuery);
-		mysql.fetchData(function(err,results){
-		if(err){
-			throw err;
-			}
-		else 
-		{
-			if(results.length > 0){
-
-			console.log(results[0].birthday);
-
-			res.send({"email":results[0].email,"firstName":results[0].firstName,"lastName":results[0].lastName,"birthday":results[0].birthday,"handle":results[0].handle,"contactinfo":results[0].contactinfo,"location":results[0].location})
+			soap.createClient(url,option, function(err, client) {
+				console.log("client created",err);
+				console.log("client created success",client);
+				client.getProfile(args, function(err, result) {
+					console.log("inside client Register");
+					console.log("results" + JSON.stringify(result));
+			if(result.length > 0){
+			res.send({"email":result.getProfileReturn.email,"firstName":result.getProfileReturn.firstname,"lastName":result.getProfileReturn.lastName,"birthday":result.getProfileReturn.birthday,"handle":result.getProfileReturn.handle,"contactinfo":result.getProfileReturn.contactinfo,"location":result.getProfileReturn.location})
 				}
 	 		else {
+	 			res.status(400);
+	 			res.json({"result":"Couldn't retrive profile at this time!"});
 	 			 }
+		})
+   });
 
-		}
-
-		},getUserQuery);			
-	
-	}
 }
+};
 
 exports.updateProfile = function (req,res){
-
-
-		winston.info("Clicked :Update Profile");
+	winston.info("Clicked :Update Profile");
 	console.log('printing date');
 	console.log(req.body.birthday.slice(0,10));
 
-		var updateUserQuery = "update users set firstName='"+req.body.firstName+"', lastName = '"+req.body.lastName+"', handle = '"+req.body.handle+"', birthday = '"+req.body.birthday.slice(0,10)+"',contactinfo='"+req.body.contactinfo+"',location = '"+req.body.location+"' where email='"+req.body.email+"'";
+		
+		
+		var url = baseURL + "/About?wsdl";
 
-	mysql.updateData(function(err,results){
-		if(err){
-			throw err;
-			}
-		else 
-		{
+		var args = {
+			"firstName": req.body.firstName,
+			"lastName": req.body.lastName,
+			"handle" : req.body.handle,
+			"contactinfo": req.body.contactinfo,
+			"location": req.body.location,
+			"email": req.body.email
+		}
+		
+
+			soap.createClient(url,option, function(err, client) {
+				console.log("client created",err);
+				console.log("client created success",client);
+				client.updateProfile(args, function(err, result) {
+					console.log("inside client updateProfile");
+					console.log("results" + JSON.stringify(result))
+	
 			if(results.length > 0){
 
-			console.log(results[0]);
-
-			res.send({"email":results[0].email,"firstName":results[0].firstName,"lastName":results[0].lastName,"birthday":results[0].birthday,"handle":results[0].handle,"contactinfo":results[0].contactinfo,"location":results[0].location})
+			res.json({"Result": "Profile Updated"});
 				}
 	 		else {
+	 			res.json({"result":"profile not updated"});
 	 			 }
 
-		}
+		});
+	});
+};
 
-		},updateUserQuery);
-
-
-
-
-
-	res.send("ok");
-
-}
 
 
 exports.getBoughtItems = function (req,res){
 
 	winston.info("Clicked :My Orders");
-	var boughtItemQuery = "select * from orders where buyer = '"+req.session.username+"';";
+	var url = baseURL + "/About?wsdl";
 
-
-		mysql.fetchData(function(err,results){
-
-			if(err){
-			throw err;
-			}
-		else 
-		{
-			if(results.length > 0){
-
-			console.log(results[0]);
-
-			res.send({"data":results});
-				}
-	 		else {
-	 			 }
-
-		}
-
-		},boughtItemQuery);
-
-
+		var args = {
+						"email": req.session.username
+					}
 		
 
+			soap.createClient(url,option, function(err, client) {
+				console.log("client created",err);
+				console.log("client created success",client);
+				client.getBoughtItems(args, function(err, result) {
+					console.log("inside client getBoughtItems");
+					console.log("results" + JSON.stringify(result))
+			{
+				if(result.length>0)
+				{
+					res.send({"data":result.getBoughtItemsReturn.myBoughtItems});
+				}
+				else
+					res.send({"data":null});
+			}
+		
+
+		});
+	});
 }
 
 
 exports.getSoldItems = function (req,res){
 
 	winston.info("Clicked :My Sold Items");
-	var soldItemQuery = "select * from orders where seller_name = '"+req.session.username+"';";
+	
+	var url = baseURL + "/About?wsdl";
 
-	mysql.fetchData(function(err,results){
+		var args = {
+						"email": req.session.username
+					}
+		
 
-			if(err){
-			throw err;
-			}
-		else 
-		{
-			if(results.length > 0){
-
-			console.log(results[0]);
-
-			res.send({"data":results});
+			soap.createClient(url,option, function(err, client) {
+				console.log("client created",err);
+				console.log("client created success",client);
+				client.getSoldItems(args, function(err, result) {
+					console.log("inside client getSoldItems");
+					console.log("results" + JSON.stringify(result))
+			
+				if(result.length>0)
+				{
+					res.send({"data":result.getSoldItemsReturn.mySoldItems});
 				}
-	 		else {
-	 			 }
+				else
+					res.send({"data":null});
+			
 
-		}
+		});
+	
+}); }
 
-		},soldItemQuery);
-
-
-
-}
 
 exports.getBidResults = function(req,res){
 
-	//auctions.concludeAuction();
+	
 	winston.info("Clicked :My Bids");
 
 	console.log("Get bids for:"+req.session.username);
+	var url = baseURL + "/About?wsdl";
 
-
-	var MyBidsQuery = "select auctions.auction_id,auctions.item_name, bids.* from auctions auctions INNER JOIN ebay_schema.bids bids ON bids.auction_id = auctions.auction_id where bidder='"+req.session.username+"';";
-	//SELECT auctions.auction_id,auctions.item_name, bids.* FROM ebay_schema.auctions auctions INNER JOIN ebay_schema.bids bids ON bids.auction_id = auctions.auction_id where bidder='apoorvmehta@sjsu.edu';
-
-	mysql.fetchData(function(err,results){
-		if(err){
-				throw err;
-				}
-			else 
-			{
-				if(results.length > 0){
-
-				console.log(results);
-
-				res.send({"data":results});
+		var args = {
+						"bidder": req.session.username
 					}
-		 		else {
-		 			 }
 
-			}
+		soap.createClient(url,option, function(err, client) {
+				console.log("client created",err);
+				console.log("client created success",client);
+				client.getBidResults(args, function(err, result) {
+					console.log("inside client getBidResults");
+					console.log("results" + JSON.stringify(result))
+			
+				if(result.length>0)
+				{
+					res.send({"Bids":result.getBidResultsReturn});
+				}
+				else
+					res.send({"data":null});
+			
 
-			},MyBidsQuery);
-
-
-
-}
+		});
+	});
+};

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://soap.com" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://soap.com" xmlns:intf="http://soap.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://soap.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="processCheckout">
+    <complexType>
+     <sequence>
+      <element name="ad_id" type="xsd:string"/>
+      <element name="item_name" type="xsd:string"/>
+      <element name="seller_name" type="xsd:string"/>
+      <element name="buyer" type="xsd:string"/>
+      <element name="cost" type="xsd:double"/>
+      <element name="qty" type="xsd:double"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="processCheckoutResponse">
+    <complexType>
+     <sequence>
+      <element name="processCheckoutReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="processCheckoutRequest">
+
+      <wsdl:part element="impl:processCheckout" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="processCheckoutResponse">
+
+      <wsdl:part element="impl:processCheckoutResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="Checkout">
+
+      <wsdl:operation name="processCheckout">
+
+         <wsdl:input message="impl:processCheckoutRequest" name="processCheckoutRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:processCheckoutResponse" name="processCheckoutResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="CheckoutSoapBinding" type="impl:Checkout">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="processCheckout">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="processCheckoutRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="processCheckoutResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="CheckoutService">
+
+      <wsdl:port binding="impl:CheckoutSoapBinding" name="Checkout">
+
+         <wsdlsoap:address location="http://localhost:8080/Ebay_Jax/services/Checkout"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

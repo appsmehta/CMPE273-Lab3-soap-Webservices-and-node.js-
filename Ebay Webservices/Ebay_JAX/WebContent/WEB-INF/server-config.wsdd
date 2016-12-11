@@ -7,8 +7,8 @@
   <ns1:parameter name="dotNetSoapEncFix" value="true"/>
   <ns1:parameter name="enableNamespacePrefixOptimization" value="false"/>
   <ns1:parameter name="sendXMLDeclaration" value="true"/>
-  <ns1:parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
   <ns1:parameter name="sendXsiTypes" value="true"/>
+  <ns1:parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
   <ns1:requestFlow>
    <ns1:handler type="java:org.apache.axis.handlers.JWSHandler">
     <ns1:parameter name="scope" value="session"/>
@@ -28,30 +28,93 @@
   <ns1:parameter name="className" value="org.apache.axis.utils.Admin"/>
   <ns1:namespace>http://xml.apache.org/axis/wsdd/</ns1:namespace>
  </ns1:service>
+ <ns1:service name="Checkout" provider="java:RPC" style="wrapped" use="literal">
+  <ns2:operation name="processCheckout" qname="ns1:processCheckout" returnQName="ns1:processCheckoutReturn" returnType="xsd:string" soapAction="" xmlns:ns1="http://soap.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://xml.apache.org/axis/wsdd/">
+   <ns2:parameter qname="ns1:ad_id" type="xsd:string"/>
+   <ns2:parameter qname="ns1:item_name" type="xsd:string"/>
+   <ns2:parameter qname="ns1:seller_name" type="xsd:string"/>
+   <ns2:parameter qname="ns1:buyer" type="xsd:string"/>
+   <ns2:parameter qname="ns1:cost" type="xsd:double"/>
+   <ns2:parameter qname="ns1:qty" type="xsd:double"/>
+  </ns2:operation>
+  <ns1:parameter name="allowedMethods" value="processCheckout"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="wsdlPortType" value="Checkout"/>
+  <ns1:parameter name="className" value="com.soap.Checkout"/>
+  <ns1:parameter name="wsdlServicePort" value="Checkout"/>
+  <ns1:parameter name="schemaQualified" value="http://soap.com"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://soap.com"/>
+  <ns1:parameter name="wsdlServiceElement" value="CheckoutService"/>
+ </ns1:service>
  <ns1:service name="Version" provider="java:RPC">
   <ns1:parameter name="allowedMethods" value="getVersion"/>
   <ns1:parameter name="className" value="org.apache.axis.Version"/>
  </ns1:service>
+ <ns1:service name="Advertisement" provider="java:RPC" style="wrapped" use="literal">
+  <ns1:operation name="getAds" qname="ns2:getAds" returnQName="ns2:getAdsReturn" returnType="ns3:Advertisements" soapAction="" xmlns:ns2="http://soap.com" xmlns:ns3="http://model.com"/>
+  <ns1:parameter name="allowedMethods" value="getAds"/>
+  <ns1:parameter name="wsdlPortType" value="Advertisement"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="schemaQualified" value="http://model.com,http://soap.com"/>
+  <ns1:parameter name="wsdlServicePort" value="Advertisement"/>
+  <ns1:parameter name="className" value="com.soap.Advertisement"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://soap.com"/>
+  <ns1:parameter name="wsdlServiceElement" value="AdvertisementService"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns4:Advertisements" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.model.Advertisements" xmlns:ns4="http://model.com"/>
+ </ns1:service>
  <ns1:service name="Login" provider="java:RPC" style="wrapped" use="literal">
-  <ns2:operation name="register" qname="ns1:register" returnQName="ns1:registerReturn" returnType="xsd:string" soapAction="" xmlns:ns1="http://soap.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://xml.apache.org/axis/wsdd/">
-   <ns2:parameter qname="ns1:email" type="xsd:string"/>
-   <ns2:parameter qname="ns1:password" type="xsd:string"/>
-   <ns2:parameter qname="ns1:firstName" type="xsd:string"/>
-   <ns2:parameter qname="ns1:lastName" type="xsd:string"/>
-  </ns2:operation>
-  <ns1:operation name="login" qname="ns2:login" returnQName="ns2:loginReturn" returnType="ns3:Users" soapAction="" xmlns:ns2="http://soap.com" xmlns:ns3="http://model.com">
-   <ns1:parameter qname="ns2:username" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <ns1:parameter qname="ns2:password" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  <ns1:operation name="register" qname="ns5:register" returnQName="ns5:registerReturn" returnType="xsd:string" soapAction="" xmlns:ns5="http://soap.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns5:email" type="xsd:string"/>
+   <ns1:parameter qname="ns5:password" type="xsd:string"/>
+   <ns1:parameter qname="ns5:firstName" type="xsd:string"/>
+   <ns1:parameter qname="ns5:lastName" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:operation name="login" qname="ns6:login" returnQName="ns6:loginReturn" returnType="ns7:Users" soapAction="" xmlns:ns6="http://soap.com" xmlns:ns7="http://model.com">
+   <ns1:parameter qname="ns6:username" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+   <ns1:parameter qname="ns6:password" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
   </ns1:operation>
   <ns1:parameter name="allowedMethods" value="login register"/>
-  <ns1:parameter name="typeMappingVersion" value="1.2"/>
   <ns1:parameter name="wsdlPortType" value="Login"/>
-  <ns1:parameter name="className" value="com.soap.Login"/>
-  <ns1:parameter name="wsdlServicePort" value="Login"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
   <ns1:parameter name="schemaQualified" value="http://model.com,http://soap.com"/>
+  <ns1:parameter name="wsdlServicePort" value="Login"/>
+  <ns1:parameter name="className" value="com.soap.Login"/>
   <ns1:parameter name="wsdlTargetNamespace" value="http://soap.com"/>
   <ns1:parameter name="wsdlServiceElement" value="LoginService"/>
-  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns4:Users" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.model.Users" xmlns:ns4="http://model.com"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns8:Users" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.model.Users" xmlns:ns8="http://model.com"/>
+ </ns1:service>
+ <ns1:service name="About" provider="java:RPC" style="wrapped" use="literal">
+  <ns1:operation name="getProfile" qname="ns9:getProfile" returnQName="ns9:getProfileReturn" returnType="ns10:Users" soapAction="" xmlns:ns10="http://model.com" xmlns:ns9="http://soap.com">
+   <ns1:parameter qname="ns9:email" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns1:operation>
+  <ns1:operation name="getSoldItems" qname="ns11:getSoldItems" returnQName="ns11:getSoldItemsReturn" returnType="ns12:Orders" soapAction="" xmlns:ns11="http://soap.com" xmlns:ns12="http://model.com">
+   <ns1:parameter qname="ns11:email" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns1:operation>
+  <ns1:operation name="getBoughtItems" qname="ns13:getBoughtItems" returnQName="ns13:getBoughtItemsReturn" returnType="ns14:Orders" soapAction="" xmlns:ns13="http://soap.com" xmlns:ns14="http://model.com">
+   <ns1:parameter qname="ns13:email" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns1:operation>
+  <ns1:operation name="getBidResults" qname="ns15:getBidResults" returnQName="ns15:getBidResultsReturn" returnType="ns16:Bids" soapAction="" xmlns:ns15="http://soap.com" xmlns:ns16="http://model.com">
+   <ns1:parameter qname="ns15:bidder" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  </ns1:operation>
+  <ns1:operation name="updateProfile" qname="ns17:updateProfile" returnQName="ns17:updateProfileReturn" returnType="xsd:string" soapAction="" xmlns:ns17="http://soap.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <ns1:parameter qname="ns17:firstName" type="xsd:string"/>
+   <ns1:parameter qname="ns17:lastName" type="xsd:string"/>
+   <ns1:parameter qname="ns17:handle" type="xsd:string"/>
+   <ns1:parameter qname="ns17:contactinfo" type="xsd:string"/>
+   <ns1:parameter qname="ns17:location" type="xsd:string"/>
+   <ns1:parameter qname="ns17:email" type="xsd:string"/>
+  </ns1:operation>
+  <ns1:parameter name="allowedMethods" value="getBoughtItems updateProfile getBidResults getProfile getSoldItems"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="wsdlPortType" value="About"/>
+  <ns1:parameter name="className" value="com.soap.About"/>
+  <ns1:parameter name="wsdlServicePort" value="About"/>
+  <ns1:parameter name="schemaQualified" value="http://model.com,http://soap.com"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://soap.com"/>
+  <ns1:parameter name="wsdlServiceElement" value="AboutService"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns18:Orders" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.model.Orders" xmlns:ns18="http://model.com"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns19:Bids" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.model.Bids" xmlns:ns19="http://model.com"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns20:Users" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.model.Users" xmlns:ns20="http://model.com"/>
  </ns1:service>
  <ns1:transport name="http">
   <ns1:requestFlow>
