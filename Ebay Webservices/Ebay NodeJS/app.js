@@ -43,32 +43,32 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
-app.get('/signIn', login.signIn);
-app.get('/Register', login.signIn);
-app.get('/ads',adM.ad);
-app.get('/about',aboutM.about);
-app.get('/logout',register.logout);
-app.get('/aboutProfile',aboutM.getProfile);
-app.get('/getAds',adM.getAds);
-app.get('/checkout',checkout.home);
-app.get('/getCart',checkout.getCart);
-app.get('/sell',adM.sellHome);
+app.get('/', routes.index); //done
+app.get('/signIn', login.signIn);// done
+app.get('/Register', login.signIn); //done
+app.get('/ads',adM.ad);//done
+app.get('/about',aboutM.about);//done
+app.get('/logout',register.logout);//done
+app.get('/aboutProfile',aboutM.getProfile); //done
+app.get('/getAds',adM.getAds);//done
+app.get('/checkout',checkout.home);//done
+app.get('/getCart',checkout.getCart);//done
+app.get('/sell',adM.sellHome);//done
 app.get('/getAuctions',adM.getAuctions);
-app.get('/getBoughtItems',aboutM.getBoughtItems);
-app.get('/getSoldItems',aboutM.getSoldItems);
-app.get('/MyBidResults',aboutM.getBidResults);
+app.get('/getBoughtItems',aboutM.getBoughtItems);//done
+app.get('/getSoldItems',aboutM.getSoldItems);//done
+app.get('/MyBidResults',aboutM.getBidResults);//done
 
-app.post('/Register',register.signup);
-app.post('/checklogin',register.authenticate);
-app.post('/updateAbout',aboutM.updateProfile);
-app.post('/postAd',adM.postAd);
-app.post('/addItem',adM.addtoCart);
-app.post('/processCard',processCard.validate);
-app.post('/removeItem',adM.removeFromCart);
-app.post('/postAuction',adM.postAuction);
+app.post('/Register',register.signup);//done
+app.post('/checklogin',register.authenticate);//done
+app.post('/updateAbout',aboutM.updateProfile); //done
+app.post('/postAd',adM.postAd);//done
+app.post('/addItem',adM.addtoCart);//done
+app.post('/processCard',processCard.validate);//done
+app.post('/removeItem',adM.removeFromCart);//done
+app.post('/postAuction',adM.postAuction);//done
 app.post('/registerBid',adM.registerBid);
-app.post('/concludeAuction',adM.concludeAuction);
+
 
 pool.createNewPool(25);
 

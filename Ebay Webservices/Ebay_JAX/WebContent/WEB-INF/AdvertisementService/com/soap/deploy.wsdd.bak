@@ -1,0 +1,36 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from AdvertisementService WSDL service -->
+
+  <service name="Advertisement" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://soap.com"/>
+      <parameter name="wsdlServiceElement" value="AdvertisementService"/>
+      <parameter name="schemaQualified" value="http://model.com,http://soap.com"/>
+      <parameter name="wsdlServicePort" value="Advertisement"/>
+      <parameter name="className" value="com.soap.AdvertisementSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="Advertisement"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="getAds" qname="operNS:getAds" xmlns:operNS="http://soap.com" returnQName="retNS:getAdsReturn" xmlns:retNS="http://soap.com" returnType="rtns:Advertisements" xmlns:rtns="http://model.com" soapAction="" >
+      </operation>
+      <parameter name="allowedMethods" value="getAds"/>
+
+      <typeMapping
+        xmlns:ns="http://model.com"
+        qname="ns:Advertisements"
+        type="java:com.model.Advertisements"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>

@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://soap.com" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://soap.com" xmlns:intf="http://soap.com" xmlns:tns1="http://model.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://soap.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://model.com"/>
+   <element name="getProfile">
+    <complexType>
+     <sequence>
+      <element name="email" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getProfileResponse">
+    <complexType>
+     <sequence>
+      <element name="getProfileReturn" type="tns1:Users"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSoldItems">
+    <complexType>
+     <sequence>
+      <element name="email" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getSoldItemsResponse">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="getSoldItemsReturn" type="tns1:Orders"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getBoughtItems">
+    <complexType>
+     <sequence>
+      <element name="email" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getBoughtItemsResponse">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="getBoughtItemsReturn" type="tns1:Orders"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getBidResults">
+    <complexType>
+     <sequence>
+      <element name="bidder" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getBidResultsResponse">
+    <complexType>
+     <sequence>
+      <element maxOccurs="unbounded" name="getBidResultsReturn" type="tns1:Bids"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updateProfile">
+    <complexType>
+     <sequence>
+      <element name="firstName" type="xsd:string"/>
+      <element name="lastName" type="xsd:string"/>
+      <element name="handle" type="xsd:string"/>
+      <element name="contactinfo" type="xsd:string"/>
+      <element name="location" type="xsd:string"/>
+      <element name="email" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updateProfileResponse">
+    <complexType>
+     <sequence>
+      <element name="updateProfileReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+  <schema elementFormDefault="qualified" targetNamespace="http://model.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <complexType name="Users">
+    <sequence>
+     <element name="birthday" nillable="true" type="xsd:date"/>
+     <element name="email" nillable="true" type="xsd:string"/>
+     <element name="firstName" nillable="true" type="xsd:string"/>
+     <element name="handle" nillable="true" type="xsd:string"/>
+     <element name="lastName" nillable="true" type="xsd:string"/>
+     <element name="last_logged_in" nillable="true" type="xsd:date"/>
+     <element name="location" nillable="true" type="xsd:string"/>
+     <element name="password" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Orders">
+    <sequence>
+     <element name="ad_id" type="xsd:double"/>
+     <element name="buyer" nillable="true" type="xsd:string"/>
+     <element name="cost" type="xsd:double"/>
+     <element name="item_name" nillable="true" type="xsd:string"/>
+     <element name="order_id" type="xsd:double"/>
+     <element name="qty" type="xsd:double"/>
+     <element name="seller_name" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Bids">
+    <sequence>
+     <element name="auction_id" type="xsd:double"/>
+     <element name="bid_amount" type="xsd:double"/>
+     <element name="bid_id" type="xsd:double"/>
+     <element name="bid_status" nillable="true" type="xsd:string"/>
+     <element name="bid_time" nillable="true" type="xsd:date"/>
+     <element name="bidder" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getBoughtItemsResponse">
+
+      <wsdl:part element="impl:getBoughtItemsResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getBoughtItemsRequest">
+
+      <wsdl:part element="impl:getBoughtItems" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSoldItemsRequest">
+
+      <wsdl:part element="impl:getSoldItems" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getBidResultsRequest">
+
+      <wsdl:part element="impl:getBidResults" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateProfileRequest">
+
+      <wsdl:part element="impl:updateProfile" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProfileResponse">
+
+      <wsdl:part element="impl:getProfileResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getBidResultsResponse">
+
+      <wsdl:part element="impl:getBidResultsResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getProfileRequest">
+
+      <wsdl:part element="impl:getProfile" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSoldItemsResponse">
+
+      <wsdl:part element="impl:getSoldItemsResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateProfileResponse">
+
+      <wsdl:part element="impl:updateProfileResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="About">
+
+      <wsdl:operation name="getProfile">
+
+         <wsdl:input message="impl:getProfileRequest" name="getProfileRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getProfileResponse" name="getProfileResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSoldItems">
+
+         <wsdl:input message="impl:getSoldItemsRequest" name="getSoldItemsRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getSoldItemsResponse" name="getSoldItemsResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getBoughtItems">
+
+         <wsdl:input message="impl:getBoughtItemsRequest" name="getBoughtItemsRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getBoughtItemsResponse" name="getBoughtItemsResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getBidResults">
+
+         <wsdl:input message="impl:getBidResultsRequest" name="getBidResultsRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getBidResultsResponse" name="getBidResultsResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateProfile">
+
+         <wsdl:input message="impl:updateProfileRequest" name="updateProfileRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:updateProfileResponse" name="updateProfileResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="AboutSoapBinding" type="impl:About">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getProfile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getProfileRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getProfileResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSoldItems">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSoldItemsRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSoldItemsResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getBoughtItems">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getBoughtItemsRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getBoughtItemsResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getBidResults">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getBidResultsRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getBidResultsResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateProfile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateProfileRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateProfileResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="AboutService">
+
+      <wsdl:port binding="impl:AboutSoapBinding" name="About">
+
+         <wsdlsoap:address location="http://localhost:8080/Ebay_Jax/services/About"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

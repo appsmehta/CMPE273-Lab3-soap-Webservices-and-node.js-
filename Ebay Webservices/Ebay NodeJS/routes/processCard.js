@@ -1,6 +1,9 @@
 var winston = require('../log.js');
 var ejs = require("ejs");
-var mysql = require('./mysql');
+/*var mysql = require('./mysql');*/
+var soap = require('soap');
+var baseURL= "http://localhost:8080/Ebay_Jax/services";
+
 
 exports.validate = function (req,res){
 
@@ -71,71 +74,34 @@ exports.validate = function (req,res){
 				var checkoutQuery = "insert into orders (`ad_id`,`item_name`,`seller_name`, `buyer`,`cost`, `qty`) values ('"+orderedItem.adv_id+"','"+orderedItem.item_name+"','"+orderedItem.seller_name+"','"+req.session.username+"','"+(orderedItem.item_price*req.session.cartqty[item])+"','"+req.session.cartqty[item]+"');";
 				console.log("Query is:"+checkoutQuery);
 
-				mysql.storeData(function(err,results){
-				if(err){
-					res.json({"statusCode":500})
-					throw err;
-					}
-				else 
-				{
-					if(results.length > 0){
-
-					console.log(results[0]);
-
-					res.json({ user: 'tobi' })
-					res.end();
+				var url = baseURL + "/Checkout?wsdl";
+				var args = {
+							"ad_id": orderedItem.adv_id,
+							"item_name":orderedItem.item_name,
+							"seller_name":orderedItem.seller_name,
+							"buyer":req.session.username,
+							"cost":orderedItem.item_price*req.session.cartqty[item],
+							"qty":req.session.cartqty[item]
 						}
-			 		else {
-			 			 }
 
+						soap.createClient(url,option, function(err, client) {
+						console.log("client created",err);
+						console.log("client created success",client);
+						client.processCheckout(args, function(err, result) {
+						console.log("inside process checkout");
+						console.log("results" + JSON.stringify(result));
+
+						
+							if(result.processCheckoutReturn!=null)
+								{
+									res.status(200);
+								res.json({"result":result.processCheckoutReturn})
+								}
+								else
+									res.status(400);
+								res.json({"result":"Error processing order"});
+						});
+					});
 				}
-
-				},checkoutQuery);
-
-				var updatedQuantity = orderedItem.item_quantity - req.session.cartqty[item]; 
-				console.log(updatedQuantity);
-
-				var updateAdQuery = "update advertisements set item_quantity='"+updatedQuantity+"' where `adv_id`='"+orderedItem.adv_id+"';";
-
-				console.log("Query is:"+updateAdQuery);
-
-				mysql.storeData(function(err,results){
-				if(err){
-					res.json({"statusCode":500})
-					throw err;
-					}
-				else 
-				{
-					if(results.length > 0){
-
-					console.log(results[0]);
-
-					res.json({ user: 'tobi' })
-					res.end();
-						}
-			 		else {
-			 			 }
-
-				}
-
-				},updateAdQuery);
-
-
-
-
-        	}
-
-
-		res.json({"StatusCode":200});
-		res.end();
-	}
-	
-	else
-		{
-		console.log("invalid");
-		res.status(500).json({data:validations});
-		res.end();
-	    }
-		
-	
-}
+		}
+};

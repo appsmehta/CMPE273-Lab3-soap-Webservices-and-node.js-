@@ -1,0 +1,70 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from AboutService WSDL service -->
+
+  <service name="About" provider="java:RPC" style="wrapped" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://soap.com"/>
+      <parameter name="wsdlServiceElement" value="AboutService"/>
+      <parameter name="schemaQualified" value="http://model.com,http://soap.com"/>
+      <parameter name="wsdlServicePort" value="About"/>
+      <parameter name="className" value="com.soap.AboutSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="About"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation name="getProfile" qname="operNS:getProfile" xmlns:operNS="http://soap.com" returnQName="retNS:getProfileReturn" xmlns:retNS="http://soap.com" returnType="rtns:Users" xmlns:rtns="http://model.com" soapAction="" >
+        <parameter qname="pns:email" xmlns:pns="http://soap.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getSoldItems" qname="operNS:getSoldItems" xmlns:operNS="http://soap.com" returnQName="retNS:getSoldItemsReturn" xmlns:retNS="http://soap.com" returnType="rtns:Orders" xmlns:rtns="http://model.com" soapAction="" >
+        <parameter qname="pns:email" xmlns:pns="http://soap.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getBoughtItems" qname="operNS:getBoughtItems" xmlns:operNS="http://soap.com" returnQName="retNS:getBoughtItemsReturn" xmlns:retNS="http://soap.com" returnType="rtns:Orders" xmlns:rtns="http://model.com" soapAction="" >
+        <parameter qname="pns:email" xmlns:pns="http://soap.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="getBidResults" qname="operNS:getBidResults" xmlns:operNS="http://soap.com" returnQName="retNS:getBidResultsReturn" xmlns:retNS="http://soap.com" returnType="rtns:Bids" xmlns:rtns="http://model.com" soapAction="" >
+        <parameter qname="pns:bidder" xmlns:pns="http://soap.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="updateProfile" qname="operNS:updateProfile" xmlns:operNS="http://soap.com" returnQName="retNS:updateProfileReturn" xmlns:retNS="http://soap.com" returnType="rtns:string" xmlns:rtns="http://www.w3.org/2001/XMLSchema" soapAction="" >
+        <parameter qname="pns:firstName" xmlns:pns="http://soap.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:lastName" xmlns:pns="http://soap.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:handle" xmlns:pns="http://soap.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:contactinfo" xmlns:pns="http://soap.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:location" xmlns:pns="http://soap.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter qname="pns:email" xmlns:pns="http://soap.com" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="getBoughtItems updateProfile getBidResults getProfile getSoldItems"/>
+
+      <typeMapping
+        xmlns:ns="http://model.com"
+        qname="ns:Orders"
+        type="java:com.model.Orders"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://model.com"
+        qname="ns:Bids"
+        type="java:com.model.Bids"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://model.com"
+        qname="ns:Users"
+        type="java:com.model.Users"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>

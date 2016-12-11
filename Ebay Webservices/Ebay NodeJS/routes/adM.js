@@ -1,9 +1,12 @@
 var ejs = require('ejs');
-var mysql = require('./mysql');
+/*var mysql = require('./mysql');*/
 require("client-sessions");
 var dateFormat = require('dateformat');
 var now = "2016-10-13T10:48:31.000Z";
 var winston = require('../log.js');
+
+var soap = require('soap');
+var baseURL= "http://localhost:8080/Ebay_Jax/services";
 
 
 const fs = require('fs');
@@ -56,33 +59,36 @@ exports.getAds = function(req,res) {
 		var getAdquery = "select * from advertisements";
 		console.log("Query is:"+getAdquery);
 
-		mysql.fetchData(function(err,results){
-			if(err){
-				throw err;
-			}
-			else 
-			{
-				if(results.length > 0){
 
-					console.log(results[0]);
-
-					res.json({'ads':results,"itemsincart":req.session.cartitems,"orderedquantities":req.session.cartqty});
-				}
-				else {
-				}
-
-			}
-
-		},getAdquery);
+		var url = baseURL + "/Advertisements?wsdl";
+		var args = {};
 
 
-	}
 
-	else {
+			soap.createClient(url,option, function(err, client) {
+				console.log("client created",err);
+				console.log("client created success",client);
+				client.getAds(args, function(err, result) {
+					console.log("inside Ads getAds");
+					console.log("results" + JSON.stringify(result));
 
-		res.json({"logged-in":"false"})
-	}
+					if(result.getAdsReturn.length>0)
+					{
+						json_responses = result.getAdsReturn;
+						res.status(200);
+						res.json(json_responses);
+					}
+					
+					else
+					{
+						res.status(400);
+						res.json({"result":"No Ads to show"});
+					}
 
+				});
+			});
+
+}
 }
 
 exports.getAuctions = function(req,res){
@@ -92,102 +98,33 @@ exports.getAuctions = function(req,res){
 
 	console.log(dateFormat(now, "fullDate"));
 
+	var url = baseURL + "/Advertisements?wsdl";
+		var args = {};
 
 
-		/*if(req.session.username!=undefined)
-		{*/
 
-			var getAuctionquery = "select * from auctions where status='in-progress' AND expires >= NOW()";
-			console.log("Query is:"+getAuctionquery);
-				//var highestbids = [];
+			soap.createClient(url,option, function(err, client) {
+				console.log("client created",err);
+				console.log("client created success",client);
+				client.getAuctions(args, function(err, result) {
+					console.log("inside Ads getAuctions");
+					console.log("results" + JSON.stringify(result));
 
-				mysql.fetchData(function(err,results){
-					if(err){
-						throw err;
-					}
-					else 
+					if(result.getAuctionsReturn.length>0)
 					{
-						if(results.length > 0){
-
-							console.log("first callback result " + results[0]);
-
-							console.log("calling the bids function");
-							getHighestBids(results, function(highestbids){
-								for (var result in results)
-								{
-									console.log("result is " + result);
-									console.log("GOt the highest bid for :"+results[result].item_name+" as $:"+highestbids[result]);
-
-								}
-								console.log("sent json");
-								res.json({'auctions':results,'highestbids':highestbids});	
-
-							});
-
-
-						/*for (var result in results)
-
-						{	
-							console.log("Before querying highest bid for:"+results[result].item_name);
-
-							console.log("for "+results[result].item_name+" auction id is :"+results[result].auction_id);
-							var getHighestBidQuery = "select * from bids where bid_amount = (select max(bid_amount) from bids where auction_id = '"+results[result].auction_id+"');";
-
-
-									mysql.fetchData(function(error,bidresults){
-										if(err){
-											throw err;
-											}
-										else 
-										{
-											if(bidresults.length > 0){
-
-										        	console.log(JSON.stringify(results[result]));
-										        	highestbids[result] = bidresults[0]; 
-										       
-										        	//console.log("For Item:"+results[result].item_name +" highest bid is :"+highestbids[result].bid_amount);
-											
-												}
-									 		else {
-
-									 				console.log("Bidding else of "+results[result].item_name);
-									 			 }
-
-										}
-
-										},getHighestBidQuery);
-
-
-
-						}
-
-						for (result in results)
-						{
-							
-							//console.log("For Item:"+results[result].item_name +" highest bid is :"+highestbids[result].bid_amount);
-							console.log(JSON.stringify(highestbids[result]));
-						}*/
-
-
-
-
-
+						json_responses = result.getAdsReturn;
+						res.status(200);
+						res.json(json_responses);
 					}
-					else {
+					
+					else
+					{
+						res.status(400);
+						res.json({"result":"No Auction Items to show"});
 					}
 
-				}
-
-			},getAuctionquery);
-
-
-		/*}
-
-		else {
-
-			res.json({"logged-in":"false"})
-		}*/
-
+				});
+			});
 
 
 
@@ -201,35 +138,42 @@ exports.getAuctions = function(req,res){
 	{
 		console.log(req.body.item_quantity);
 
-		winston.info("Clicked:Post Ad");
+		winston.info("Clicked:Post Ad");		
+		var url = baseURL + "/Advertisements?wsdl";
+		var args = { 
+					 "item_name":req.body.item_name,
+					  "item_description":req.body.item_description,
+					  "seller_name":res.session.username,
+					  "item_price":req.body.item_price,
+					  "item_quantity":req.body.item_quantity
+				};
 
-		var postAdquery = "insert into advertisements (`item_name`, `item_description`, `seller_name`, `item_price`, `item_quantity`) values ('"+req.body.item_name+"','"+req.body.item_description+"','"+req.session.username+"','"+req.body.item_price+"','"+req.body.item_quantity+"');";
-		console.log("Query is:"+postAdquery);
 
-		mysql.storeData(function(err,results){
-			if(err){
-				res.json({"statusCode":500})
-				throw err;
-			}
-			else 
-			{
-				if(results.length > 0){
 
-					console.log(results[0]);
+			soap.createClient(url,option, function(err, client) {
+				console.log("client created",err);
+				console.log("client created success",client);
+				client.postAd(args, function(err, result) {
+					console.log("inside Ads postAds");
+					console.log("results" + JSON.stringify(result));
 
-					res.json({ user: 'tobi' })
-					res.end();
-				}
-				else {
-				}
+					if(result.postAdReturn!=null)
+					{
+						
+						res.status(200);
+						res.json({"Result":"Ad posted!"});
+					}
+					
+					else
+					{
+						res.status(400);
+						res.json({"result":"Ad not posted"});
+					}
 
-			}
-
-		},postAdquery);
+				});
+			});
 	}
 }
-
-
 exports.postAuction = function(req,res) {
 
 	winston.info("Clicked:Post Auction");
@@ -242,31 +186,39 @@ exports.postAuction = function(req,res) {
 	var postAuctionQuery = "insert into auctions(`item_name`, `item_description`, `seller_name`, `item_price`,`status`,`expires`) values ('"+req.body.item_name+"','"+req.body.item_description+"','"+req.session.username+"','"+req.body.item_price+"','in-progress','"+expirydate+"');";
 	console.log("Query is:"+postAuctionQuery);
 
-	//INSERT INTO `ebay_schema`.`auctions` (`item_name`, `item_description`, `seller_name`, `item_price`, `status`) VALUES ('Auction1', 'Item2', 'apoorvmehta@sjsu.edu', '200', 'in-progress');
+	var url = baseURL + "/Advertisements?wsdl";
+		var args = { 
+					 "item_name":req.body.item_name,
+					  "item_description":req.body.item_description,
+					  "seller_name":res.session.username,
+					  "status":"in-progress",
+					  "expires":expirydate
+				};
 
-	mysql.storeData(function(err,results){
-		if(err){
-			res.json({"statusCode":500})
-			throw err;
-		}
-		else 
-		{
-			if(results.length > 0){
+	
 
-				console.log(results[0]);
+			soap.createClient(url,option, function(err, client) {
+				console.log("client created",err);
+				console.log("client created success",client);
+				client.postAuction(args, function(err, result) {
+					console.log("inside Ads postAuction");
+					console.log("results" + JSON.stringify(result));
 
-				res.json({ user: 'tobi' })
-				res.end();
-			}
-			else {
-			}
+					if(result.postAuctionReturn!=null)
+					{
+						
+						res.status(200);
+						res.json({"Result":"Auction Item posted!"});
+					}
+					
+					else
+					{
+						res.status(400);
+						res.json({"result":"Auction Item not posted"});
+					}
 
-		}
-
-	},postAuctionQuery);
-
-
-
+				});
+			});
 }
 
 
@@ -301,23 +253,7 @@ winston.info("Clicked: Remove from Cart on:"+req.body.product.item_name);
 	console.log(req.session.cartitems);
 	;res.json({statusCode:200,"itemsincart":req.session.cartitems,"orderedquantities":req.session.cartqty})
 
-	//console.log(req.session.cartitems);
-
-	/*function checkProduct(element){
-
-		console.log(element);
-
-		return true;*/
-		//return element==req.body.product;
-		
-
-//	var position = req.session.cartitems.findIndex(checkProduct);
-
-	//req.session.cartitems.findIndex(checkProduct);
-
-	//console.log(position);
-
-
+	
 
 }
 
@@ -346,144 +282,37 @@ exports.registerBid = function(req,res){
 
 	console.log(req.body.Auctionitem.auction_id + " "+ req.session.username + " "+ req.body.bidAmount + " "+ "active");
 
-	var insertBidQuery = "Insert into bids (`auction_id`,`bidder`,`bid_amount`,`bid_status`) values ('"+req.body.Auctionitem.auction_id+"','"+ req.session.username +"','"+ req.body.bidAmount+"','active');";
+	
 
-	mysql.storeData(function(err,results){
-		if(err){
-			res.json({"statusCode":500})
-			throw err;
-		}
-		else 
-		{
-			if(results.length > 0){
+	var url = baseURL + "/Advertisements?wsdl";
+		var args = { 
+					 "auction_id":req.body.Auctionitem.auction_id,
+					  "bidder":res.session.username,
+					  "bid_amount":req.body.bid_amount,
+					  "bid_status":"active",
+					  
+				};
 
-				console.log(results[0]);
+				soap.createClient(url,option, function(err, client) {
+				console.log("client created",err);
+				console.log("client created success",client);
+				client.registerBid(args, function(err, result) {
+					console.log("inside Ads registerBid");
+					console.log("results" + JSON.stringify(result));
 
-				res.json({ user: 'tobi' })
-				res.end();
-			}
-			else {
-			}
-
-		}
-
-	},insertBidQuery);
-
-
-
-
-}
-
-
-
-var getHighestBids = function (auctions, callback) {
-
-
-	var highestBids = []; 
-	var rows = [];
-	var i = 0;
-
-	for (var auctionitem in auctions)
-	{
-
-		console.log("Before querying highest bid for:"+auctionitem);
-
-		console.log("for "+auctions[auctionitem].item_name+" auction id is :"+auctionitem);
-		var getHighestBidQuery = "select * from bids where bid_amount = (select max(bid_amount) from bids where auction_id = '"+auctions[auctionitem].auction_id+"') AND auction_id ='"+auctions[auctionitem].auction_id+"' ;";
-
-
-		mysql.fetchBlockingData(getHighestBidQuery, function(response){
-
-			if(response[0]!=null){
-				console.log("Now setting highest bid for......... "+ response[0].auction_id);
-
-				highestBids.push(response[0]);
-			}
-
-			console.log("auctionitem " + i);
-
-			i++;	
-
-
-			if(i == auctions.length){
-				console.log("final callback called");
-				callback(highestBids);
-			}
-
-		});					
-
-		
-
-
-
-
-
-	}
-
-}
-
-
-
-
-exports.concludeAuction = function (req,res){
-
-	console.log("inside Auction processor function");
-
-
-	var expiredItems = "select * from auctions where expires <= NOW()";
-	var highestBidforresult = [];
-
-	mysql.fetchData(function(err,results){
-
-		if(err){
-			throw err;
-		}
-		else 
-		{
-			if(results.length > 0)
-			{
-				console.log("expired Auction items:");
-				console.log(results);
-
-
-				getHighestBids(results, function(highestbids){
-					for (var result in results)
+					if(result.registerBidResult!=null)
 					{
-						console.log("result is " + result);
-						if(highestbids[result]!=undefined)
-						{
-							console.log("GOt the highest bid for :"+results[result].item_name+" as $:"+highestbids[result].bid_id);
-							var updateLostBidQuery = "update bids set bid_status = 'lost' where auction_id='"+results[result].auction_id+"' AND bid_id !='"+highestbids[result].bid_id+"'";
-							mysql.storeData(function(error,updatedResults){
-
-								console.log("updated lost bids for :"+results[result].auction_id);
-							},updateLostBidQuery);
-
-
-							var updateWonBidQuery = "update bids set bid_status = 'won' where auction_id='"+results[result].auction_id+"' AND bid_id ='"+highestbids[result].bid_id+"'";
-
-							mysql.storeData(function(error,updatedResults){
-
-								console.log("updated won bids for :"+results[result].auction_id);
-
-							},updateWonBidQuery);
-
-						}
-
+						
+						res.status(200);
+						res.json({"Result":"Bid posted!"});
+					}
+					
+					else
+					{
+						res.status(400);
+						res.json({"result":"Bid not posted"});
 					}
 
-				})
-
-
-
-
-			}
-		}
-	},expiredItems);
-
-
-
-
+				});
+			});
 }
-
-
